@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import Form from '@components/Form';
 
 
-const EditTask = () => {
+const EditTaskContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const taskId = searchParams.get('id');
@@ -75,4 +75,13 @@ const EditTask = () => {
   </main>
   )
 }
+
+const EditTask = () => {
+  return (
+    <Suspense fallback={<div className="text-black p-24">Loading...</div>}>
+      <EditTaskContent />
+    </Suspense>
+  )
+}
+
 export default EditTask;
