@@ -9,7 +9,6 @@ const Nav = () => {
   const {data: session} = useSession();
   const [providers, setProviders] = useState(null);
 
-  const [toggleDropdown, setToggleDropdown] = useState(false);
 
   useEffect(() => {
     // avoid shadowing the state setter `setProviders`

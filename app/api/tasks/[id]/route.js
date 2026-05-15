@@ -17,7 +17,7 @@ export const GET = async (req, {params}) => {
 }
 
 export const PATCH = async (req, {params}) => {
-  const {text, completed} = await req.json();
+  const { title, description, untilDate, priority, completed } = await req.json();
 
   try {
     await connectToDatabase();
@@ -27,7 +27,21 @@ export const PATCH = async (req, {params}) => {
     const existingTask = await Task.findById(id);
     if(!existingTask) return new Response("Task not found", {status: 404});
 
-    existingTask.text = text;
+    const normalizedTitle = title?.trim();
+    const duplicateTask = await Task.findOne({
+      creator: existingTask.creator,
+      title: normalizedTitle,
+      _id: { $ne: id },
+    });
+
+    if (duplicateTask) {
+      return new Response("Task with this title already exists", {status: 409});
+    }
+
+    existingTask.title = normalizedTitle;
+    existingTask.description = description;
+    existingTask.untilDate = untilDate;
+    existingTask.priority = priority;
     existingTask.completed = completed;
 
     await existingTask.save();
@@ -44,7 +58,9 @@ export const DELETE = async (req, {params}) => {
 
     const { id } = await params;
 
-    await Task.findByIdAndDelete(id);
+    const deletedTask = await Task.findByIdAndDelete(id);
+
+    if (!deletedTask) return new Response("Task not found", {status: 404});
 
     return new Response("Task deleted successfully", {status: 200});
   } catch (error) {

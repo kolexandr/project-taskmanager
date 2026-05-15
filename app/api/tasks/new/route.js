@@ -5,9 +5,25 @@ export const POST = async (req) => {
   const { userId, title, description, untilDate, priority } = await req.json();
   try {
     await connectToDatabase();
+
+    const normalizedTitle = title?.trim();
+
+    if (!userId || !normalizedTitle || !untilDate) {
+      return new Response('Missing required fields', { status: 400 });
+    }
+
+    const existingTask = await Task.findOne({
+      creator: userId,
+      title: normalizedTitle,
+    });
+
+    if (existingTask) {
+      return new Response('Task with this title already exists', { status: 409 });
+    }
+
     const newTask = new Task({
       creator: userId,
-      title,
+      title: normalizedTitle,
       description: description || '',
       untilDate: untilDate ? new Date(untilDate) : undefined,
       priority: priority || 'medium',

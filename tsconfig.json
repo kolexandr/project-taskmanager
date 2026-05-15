@@ -9,6 +9,7 @@
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
+    "baseUrl": ".",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -19,9 +20,11 @@
       }
     ],
     "paths": {
-      "@*": ["./*"]
+      "@components/*": ["components/*"],
+      "@utils/*": ["utils/*"],
+      "@models/*": ["models/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/Nav.jsx", "components/Provider.jsx", "app/layout.jsx", "next.config.js", "app/create-task/page.jsx", "app/view-tasks/page.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/Nav.jsx", "components/Provider.jsx", "app/layout.jsx", "next.config.js", "app/create-task/page.jsx", "app/view-tasks/page.jsx", "app/page.jsx"],
   "exclude": ["node_modules"]
 }

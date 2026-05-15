@@ -3,6 +3,8 @@
 import {useState, useEffect} from 'react'
 import {useSession} from 'next-auth/react';
 import {useRouter} from 'next/navigation';
+import { filterTasks } from './filterTasks';
+import { redirect } from 'next/navigation';
 
 
 const page = () => {
@@ -13,20 +15,16 @@ const page = () => {
   const [tasks, setTasks] = useState([]);
   const { data: session } = useSession();
 
-  // Search in title and description
-  const filterText = (searchText) => {
-    const regex = new RegExp(searchText, 'i');
-    return tasks.filter((task) =>
-      regex.test(task.title) || regex.test(task.description || '')
-    );
-  };
+  if (!session){
+    redirect("/");
+  }
 
   const handleSearchChange = (e) => {
     clearTimeout(searchTimeout);
     setSearchText(e.target.value);
     setSearchTimeout(
       setTimeout(() => {
-        const searchResults = filterText(e.target.value);
+        const searchResults = filterTasks(tasks, e.target.value);
         setSearchedResult(searchResults);
       }, 400)
     );
@@ -129,4 +127,4 @@ const page = () => {
   );
 }
 
-export default page
+export default page;
